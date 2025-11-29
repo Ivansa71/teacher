@@ -1,20 +1,23 @@
-FROM node:20-alpine
+# --- build stage ---
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+WORKDIR /src
 
+# копируем csproj и восстанавливаем зависимости
+COPY *.csproj ./
+RUN dotnet restore
+
+# копируем остальной код и публикуем
+COPY . .
+RUN dotnet publish -c Release -o /app/publish
+
+# --- runtime stage ---
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm ci
+COPY --from=build /app/publish .
 
-COPY . .
-
-# если у тебя TS:
-# RUN npm run build
-
-ENV NODE_ENV=production
-ENV PORT=4000
+ENV ASPNETCORE_URLS=http://0.0.0.0:4000
 EXPOSE 4000
 
-# если есть build:
-# CMD ["node", "dist/main.js"]
-# если без сборки, например обычный index.js:
-CMD ["npm", "run", "start"]
+# имя dll = как имя проекта (EduFlow.csproj → EduFlow.dll)
+ENTRYPOINT ["dotnet", "EduFlow.dll"]

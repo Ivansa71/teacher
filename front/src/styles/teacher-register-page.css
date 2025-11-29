@@ -33,8 +33,6 @@
     gap: 16px;
 }
 
-/* поле формы */
-
 .register-form__field {
     width: 100%;
 }
@@ -62,8 +60,6 @@
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
 
-/* кнопка */
-
 .register-submit {
     margin-top: 12px;
     width: 100%;
@@ -74,7 +70,7 @@
     font-size: 15px;
     font-weight: 500;
     color: #ffffff;
-    background-color: #1d3b92; /* темно-синий как на скрине */
+    background-color: #1d3b92;
     transition: transform 0.08s ease, box-shadow 0.12s ease,
     background-color 0.12s ease;
 }
@@ -90,15 +86,15 @@
     box-shadow: none;
 }
 
-/* адаптив */
-
-@media (max-width: 480px) {
-    .register-card {
-        padding: 32px 20px 28px;
-        border-radius: 14px;
-    }
-
-    .register-card__title {
-        font-size: 20px;
-    }
+.register-error {
+    margin-top: 8px;
+    color: #d92b2b;
+    font-size: 13px;
 }
+
+.register-success {
+    margin-top: 8px;
+    color: #1a7f3b;
+    font-size: 13px;
+}
+

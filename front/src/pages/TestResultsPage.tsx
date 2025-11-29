@@ -1,48 +1,62 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import React, { useMemo } from 'react';
 import '../styles/test-results-page.css';
 import type { MultipleChoiceTest, StudentTestResult } from '../tests/testTypes';
 import { loadTests } from '../tests/testStorage';
 import { mockTestWithResults } from '../tests/mockTestResults';
 
 type TestResultsPageProps = {
+    testId: string | null;
+    onBackToTests: () => void;
     onBackToDashboard: () => void;
 };
 
-type RouteParams = {
-    testId: string;
-};
-
 export const TestResultsPage: React.FC<TestResultsPageProps> = ({
-                                                                    onBackToDashboard
+                                                                    testId,
+                                                                    onBackToTests,
+                                                                    onBackToDashboard,
                                                                 }) => {
-    const navigate = useNavigate();
-    const { testId } = useParams<RouteParams>();
-    const [test, setTest] = useState<MultipleChoiceTest | null>(null);
-    const [results, setResults] = useState<StudentTestResult[]>([]);
-    const [notFound, setNotFound] = useState(false);
-
-    useEffect(() => {
-        if (!testId) return;
-
-        if (testId === mockTestWithResults.test.id) {
-            setTest(mockTestWithResults.test);
-            setResults(mockTestWithResults.results);
-            setNotFound(false);
-            return;
+    const { test, results, notFound } = useMemo<{
+        test: MultipleChoiceTest | null;
+        results: StudentTestResult[];
+        notFound: boolean;
+    }>(() => {
+        if (!testId) {
+            return {
+                test: null,
+                results: [],
+                notFound: true,
+            };
         }
 
+        if (testId === mockTestWithResults.test.id) {
+            return {
+                test: mockTestWithResults.test,
+                results: mockTestWithResults.results,
+                notFound: false,
+            };
+        }
         const localTests = loadTests();
-        const found = localTests.find(item => item.id === testId) || null;
-        setTest(found);
-        setResults([]);
+        const found = localTests.find(item => item.id === testId) ?? null;
 
-        setNotFound(!found);
+        return {
+            test: found,
+            results: [],
+            notFound: !found,
+        };
     }, [testId]);
 
     if (!testId) {
         return (
             <main className="test-results-page">
+                <header className="test-results-page__header">
+                    <button
+                        type="button"
+                        className="test-results-page__back-button"
+                        onClick={onBackToTests}
+                    >
+                        ← К тестам
+                    </button>
+                </header>
                 <p>Не указан идентификатор теста.</p>
             </main>
         );
@@ -55,7 +69,7 @@ export const TestResultsPage: React.FC<TestResultsPageProps> = ({
                     <button
                         type="button"
                         className="test-results-page__back-button"
-                        onClick={() => navigate('/tests')}
+                        onClick={onBackToTests}
                     >
                         ← К тестам
                     </button>
@@ -81,7 +95,7 @@ export const TestResultsPage: React.FC<TestResultsPageProps> = ({
                 <button
                     type="button"
                     className="test-results-page__back-button"
-                    onClick={() => navigate('/tests')}
+                    onClick={onBackToTests}
                 >
                     ← К тестам
                 </button>
@@ -135,7 +149,7 @@ export const TestResultsPage: React.FC<TestResultsPageProps> = ({
                                     month: '2-digit',
                                     year: 'numeric',
                                     hour: '2-digit',
-                                    minute: '2-digit'
+                                    minute: '2-digit',
                                 });
                                 return (
                                     <tr key={result.id}>

@@ -1,7 +1,7 @@
 .tests-page {
-    max-width: 960px;
+    padding: 24px 32px 32px;
+    max-width: 1040px;
     margin: 0 auto;
-    padding: 24px 16px 40px;
 }
 
 .tests-page__header {
@@ -9,47 +9,97 @@
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
 }
 
 .tests-page__back-button {
     border: none;
-    background: transparent;
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    background-color: #e5e7eb;
+    color: #374151;
     cursor: pointer;
-    font-size: 14px;
+    transition: background-color 0.15s ease, color 0.15s ease,
+    box-shadow 0.15s ease, transform 0.05s ease;
+}
+
+.tests-page__back-button:hover {
+    background-color: #d1d5db;
+}
+
+.tests-page__back-button:active {
+    transform: translateY(1px);
+    box-shadow: none;
+}
+
+.tests-page__back-button:focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
 }
 
 .tests-page__title {
+    margin: 0;
     font-size: 24px;
+    line-height: 1.35;
     font-weight: 600;
+    color: #111827;
 }
 
 .tests-page__subtitle {
-    font-size: 14px;
-    color: #555;
+    margin: 2px 0 0;
+    font-size: 13px;
+    color: #6b7280;
 }
 
 .tests-page__header-actions {
-    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .tests-page__create-button {
-    border-radius: 6px;
     border: none;
-    padding: 8px 14px;
-    cursor: pointer;
-    background: #2563eb;
-    color: white;
+    border-radius: 999px;
+    padding: 8px 16px;
     font-size: 14px;
+    font-weight: 600;
+    background-color: #ff6b35;
+    color: #ffffff;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.15s ease, box-shadow 0.15s ease,
+    transform 0.05s ease;
+}
+
+.tests-page__create-button:hover {
+    background-color: #ff6b35;
+    box-shadow: 0 6px 14px rgba(37, 99, 235, 0.25);
+}
+
+.tests-page__create-button:active {
+    transform: translateY(1px);
+    box-shadow: none;
+}
+
+.tests-page__create-button:focus-visible {
+    outline: 2px solid #ff6b35;
+    outline-offset: 2px;
 }
 
 .tests-page__content {
-    margin-top: 8px;
+    background-color: #ffffff;
+    border-radius: 16px;
+    border: 1px solid #e5e7eb;
+    padding: 18px 16px 18px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
 }
 
 .tests-page__empty {
+    margin: 0;
     font-size: 14px;
-    color: #555;
+    color: #6b7280;
 }
 
 .tests-page__list {
@@ -58,46 +108,86 @@
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
 }
 
 .tests-page__item {
-    border-radius: 8px;
-    border: 1px solid #e2e2e2;
-    padding: 12px 14px;
     display: flex;
-    justify-content: space-between;
+    align-items: stretch;
     gap: 12px;
+    padding: 12px 10px;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    background-color: #f9fafb;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease,
+    background-color 0.15s ease, transform 0.05s ease;
+}
+
+.tests-page__item:hover {
+    border-color: #d1d5db;
+    background-color: #ffffff;
+    box-shadow: 0 4px 10px rgba(15, 23, 42, 0.06);
+    transform: translateY(-1px);
+}
+
+.tests-page__item-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 }
 
 .tests-page__item-title {
-    font-size: 16px;
-    font-weight: 500;
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: #111827;
 }
 
 .tests-page__item-description {
+    margin: 0;
     font-size: 13px;
-    color: #555;
-    margin-top: 4px;
+    color: #4b5563;
 }
 
 .tests-page__item-meta {
+    margin: 2px 0 0;
     font-size: 12px;
-    color: #777;
-    margin-top: 4px;
+    color: #6b7280;
 }
 
 .tests-page__item-actions {
     display: flex;
     align-items: center;
+    justify-content: flex-end;
 }
 
 .tests-page__item-button {
-    border-radius: 6px;
-    border: 1px solid #2563eb;
+    border: none;
+    border-radius: 999px;
     padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    background-color: #e5edff;
+    color: #1d4ed8;
     cursor: pointer;
-    background: #f0f5ff;
-    color: #2563eb;
-    font-size: 14px;
+    white-space: nowrap;
+    transition: background-color 0.15s ease, color 0.15s ease,
+    box-shadow 0.15s ease, transform 0.05s ease;
 }
+
+.tests-page__item-button:hover {
+    background-color: #d1ddff;
+    box-shadow: 0 3px 8px rgba(37, 99, 235, 0.18);
+}
+
+.tests-page__item-button:active {
+    transform: translateY(1px);
+    box-shadow: none;
+}
+
+.tests-page__item-button:focus-visible {
+    outline: 2px solid #1d4ed8;
+    outline-offset: 2px;
+}
+

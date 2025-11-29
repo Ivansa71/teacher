@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import '../styles/test-create-page.css';
 import type {
     MultipleChoiceTest,
@@ -39,11 +39,10 @@ export const TestCreatePage: React.FC<TestCreatePageProps> = ({
         createEmptyQuestion()
     ]);
     const [error, setError] = useState<string | null>(null);
-    const [savedTests, setSavedTests] = useState<MultipleChoiceTest[]>([]);
 
-    useEffect(() => {
-        setSavedTests(loadTests());
-    }, []);
+    const [savedTests, setSavedTests] = useState<MultipleChoiceTest[]>(() => {
+        return loadTests();
+    });
 
     const handleAddQuestion = () => {
         setQuestions(prev => [...prev, createEmptyQuestion()]);
@@ -121,26 +120,28 @@ export const TestCreatePage: React.FC<TestCreatePageProps> = ({
     };
 
     const validateTest = (): boolean => {
-        if (!title.trim()) {
-            setError('Введите название теста');
+        const trimmedTitle = title.trim();
+
+        if (!trimmedTitle) {
+            setError('Пустое название теста');
             return false;
         }
 
         if (questions.length === 0) {
-            setError('Добавьте хотя бы один вопрос');
+            setError('Тест должен содержать хотя бы один вопрос');
+            return false;
+        }
+        const allQuestionsEmpty = questions.every(
+            question => !question.text.trim()
+        );
+        if (allQuestionsEmpty) {
+            setError('Тест должен содержать хотя бы один вопрос');
             return false;
         }
 
-        for (const [index, question] of questions.entries()) {
-            if (!question.text.trim()) {
-                setError(`Заполните текст вопроса №${index + 1}`);
-                return false;
-            }
-
+        for (const question of questions) {
             if (question.options.length < 2) {
-                setError(
-                    `В вопросе №${index + 1} должно быть минимум 2 варианта ответа`
-                );
+                setError('Добавьте минимум 2 варианта ответа');
                 return false;
             }
 
@@ -148,15 +149,13 @@ export const TestCreatePage: React.FC<TestCreatePageProps> = ({
                 option => option.text.trim().length > 0
             );
             if (!hasTextInAllOptions) {
-                setError(`Заполните все варианты ответа в вопросе №${index + 1}`);
+                setError('Заполните все варианты ответа');
                 return false;
             }
 
             const hasCorrectOption = question.options.some(option => option.isCorrect);
             if (!hasCorrectOption) {
-                setError(
-                    `Отметьте хотя бы один правильный ответ в вопросе №${index + 1}`
-                );
+                setError('Выберите хотя бы один правильный ответ');
                 return false;
             }
         }
@@ -188,7 +187,6 @@ export const TestCreatePage: React.FC<TestCreatePageProps> = ({
         onSaveTest(test);
         resetForm();
     };
-
 
     return (
         <div className="test-create">
@@ -271,7 +269,10 @@ export const TestCreatePage: React.FC<TestCreatePageProps> = ({
                                     type="text"
                                     value={question.text}
                                     onChange={event =>
-                                        handleQuestionTextChange(question.id, event.target.value)
+                                        handleQuestionTextChange(
+                                            question.id,
+                                            event.target.value
+                                        )
                                     }
                                     placeholder="Например: Какие из перечисленных — млекопитающие?"
                                 />
@@ -281,8 +282,8 @@ export const TestCreatePage: React.FC<TestCreatePageProps> = ({
                                 <div className="question-card__options-header">
                                     <span>Варианты ответа</span>
                                     <span className="question-card__options-hint">
-                    Отметьте галочкой один или несколько правильных вариантов
-                  </span>
+                                        Отметьте галочкой один или несколько правильных вариантов
+                                    </span>
                                 </div>
 
                                 {question.options.map(option => (
@@ -292,12 +293,15 @@ export const TestCreatePage: React.FC<TestCreatePageProps> = ({
                                                 type="checkbox"
                                                 checked={option.isCorrect}
                                                 onChange={() =>
-                                                    handleToggleOptionCorrect(question.id, option.id)
+                                                    handleToggleOptionCorrect(
+                                                        question.id,
+                                                        option.id
+                                                    )
                                                 }
                                             />
                                             <span className="option-row__checkbox-label">
-                        Правильный
-                      </span>
+                                                Правильный
+                                            </span>
                                         </label>
 
                                         <input
@@ -355,7 +359,6 @@ export const TestCreatePage: React.FC<TestCreatePageProps> = ({
                         Сохранить тест
                     </button>
                 </footer>
-
             </main>
         </div>
     );

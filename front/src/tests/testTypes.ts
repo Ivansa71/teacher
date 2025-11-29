@@ -24,7 +24,7 @@ export type StudentTestResult = {
     score: number;
     totalQuestions: number;
     percentage: number;
-    passedAt: string; // ISO-строка даты
+    passedAt: string;
 };
 
 export type TestWithResults = {

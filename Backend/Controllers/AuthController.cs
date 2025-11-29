@@ -4,9 +4,10 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Security.Cryptography;
-using EduFlow.Models;
+using EduFlow.Backend.Models;
+using EduFlow.Backend.DTOs;
 
-namespace EduFlow.Controllers;
+namespace EduFlow.Backend.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -18,51 +19,93 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public IActionResult Register([FromBody] RegisterRequest request)
     {
+        if (request.Password != request.ConfirmPassword)
+        {
+            return BadRequest(new { message = "Пароли не совпадают" });
+        }
+    
         if (_users.Any(u => u.Email == request.Email))
         {
             return BadRequest(new { message = "Пользователь с таким email уже существует" });
         }
 
-        // 🔧 УПРОЩЕННАЯ ГЕНЕРАЦИЯ ID
         var user = new User
         {
-            Id = _users.Count + 1, // ← ПРОСТО И ЭЛЕГАНТНО
+            Id = Guid.NewGuid().ToString(),
             Email = request.Email,
+            Phone = request.Phone,
             PasswordHash = HashPassword(request.Password),
-            Role = request.Role,
+            Role = request.Role, // bool из DTO
             FullName = request.FullName
         };
 
         _users.Add(user);
 
-        var token = GenerateJwtToken(user.Email, user.Role);
+        var token = GenerateJwtToken(user.Id, user.Email, user.Role);
         
-        return Ok(new { 
-            token, 
-            role = user.Role, 
-            email = user.Email,
-            fullName = user.FullName,
-            message = "Регистрация успешна" 
+        return Ok(new AuthResponse
+        { 
+            Token = token,
+            UserId = user.Id,
+            FullName = user.FullName,
+            Email = user.Email,
+            Phone = user.Phone,
+            Role = user.Role,
+            ExpiresAt = DateTime.UtcNow.AddHours(24)
         });
     }
 
     [HttpPost("login")]
     public IActionResult Login([FromBody] LoginRequest request)
     {
-        var user = _users.FirstOrDefault(u => u.Email == request.Email);
-        
+        // Ищем по полю Login (а не Email)
+        var user = _users.FirstOrDefault(u => u.Email == request.Login);
+    
         if (user == null || !VerifyPassword(request.Password, user.PasswordHash))
         {
-            return Unauthorized(new { message = "Неверный email или пароль" });
+            return Unauthorized(new { message = "Неверный логин или пароль" });
         }
 
-        var token = GenerateJwtToken(user.Email, user.Role);
-        
+        var token = GenerateJwtToken(user.Id, user.Email, user.Role);
+
+        // Возвращаем в формате фронтенда
         return Ok(new { 
-            token, 
-            role = user.Role, 
-            email = user.Email,
-            fullName = user.FullName
+            accessToken = token,           // ← accessToken вместо token
+            teacherName = user.FullName    // ← teacherName вместо fullName
+        });
+    }
+    
+    [HttpPost("register/teacher")]
+    public IActionResult RegisterTeacher([FromBody] RegisterRequest request)
+    {
+        if (_users.Any(u => u.Email == request.Email))
+        {
+            return BadRequest(new { message = "Пользователь с таким email уже существует" });
+        }
+
+        var user = new User
+        {
+            Id = Guid.NewGuid().ToString(),
+            Email = request.Email,
+            Phone = request.Phone,
+            PasswordHash = HashPassword(request.Password),
+            Role = true,  // ← всегда преподаватель (true)
+            FullName = request.FullName
+        };
+
+        _users.Add(user);
+
+        var token = GenerateJwtToken(user.Id, user.Email, user.Role);
+    
+        return Ok(new AuthResponse
+        { 
+            Token = token,
+            UserId = user.Id,
+            FullName = user.FullName,
+            Email = user.Email,
+            Phone = user.Phone,
+            Role = user.Role,
+            ExpiresAt = DateTime.UtcNow.AddHours(24)
         });
     }
 
@@ -72,24 +115,25 @@ public class AuthController : ControllerBase
         return Ok(_users.Select(u => new { u.Id, u.Email, u.Role, u.FullName }));
     }
 
-    private string GenerateJwtToken(string email, string role)
+    private string GenerateJwtToken(string userId, string email, bool role)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes("SUPER_SECRET_KEY_FOR_EDUFLOW");
-        
+        var key = Encoding.ASCII.GetBytes("SUPER_SECRET_KEY_FOR_EDUFLOW_2025_HACKATHON");
+    
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(new[]
             {
-                new Claim(ClaimTypes.Name, email),
-                new Claim(ClaimTypes.Role, role)
+                new Claim(ClaimTypes.NameIdentifier, userId),
+                new Claim(ClaimTypes.Email, email),
+                new Claim(ClaimTypes.Role, role ? "Teacher" : "Student")
             }),
             Expires = DateTime.UtcNow.AddHours(24),
             SigningCredentials = new SigningCredentials(
                 new SymmetricSecurityKey(key), 
                 SecurityAlgorithms.HmacSha256Signature)
         };
-        
+    
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
     }
@@ -106,18 +150,4 @@ public class AuthController : ControllerBase
     {
         return HashPassword(password) == passwordHash;
     }
-}
-
-public class LoginRequest
-{
-    public string Email { get; set; }
-    public string Password { get; set; }
-}
-
-public class RegisterRequest
-{
-    public string Email { get; set; }
-    public string Password { get; set; }
-    public string Role { get; set; }
-    public string FullName { get; set; }
 }

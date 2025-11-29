@@ -1,5 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useMemo } from 'react';
 import '../styles/test-list-page.css';
 import type { MultipleChoiceTest } from '../tests/testTypes';
 import { loadTests } from '../tests/testStorage';
@@ -8,18 +7,18 @@ import { mockTestWithResults } from '../tests/mockTestResults';
 type TestsListPageProps = {
     onBackToDashboard: () => void;
     onOpenTestCreate: () => void;
+    onOpenResults: (testId: string) => void;
 };
 
 export const TestsListPage: React.FC<TestsListPageProps> = ({
                                                                 onBackToDashboard,
-                                                                onOpenTestCreate
+                                                                onOpenTestCreate,
+                                                                onOpenResults,
                                                             }) => {
-    const navigate = useNavigate();
-    const [localTests, setLocalTests] = useState<MultipleChoiceTest[]>([]);
-
-    useEffect(() => {
-        setLocalTests(loadTests());
+    const localTests = useMemo<MultipleChoiceTest[]>(() => {
+        return loadTests();
     }, []);
+
 
     const allTests = useMemo(() => {
         const mocked = mockTestWithResults.test;
@@ -42,9 +41,6 @@ export const TestsListPage: React.FC<TestsListPageProps> = ({
                     <h1 id="tests-page-title" className="tests-page__title">
                         Тесты
                     </h1>
-                    <p className="tests-page__subtitle">
-                        Управление тестами и просмотр результатов
-                    </p>
                 </div>
 
                 <div className="tests-page__header-actions">
@@ -83,7 +79,7 @@ export const TestsListPage: React.FC<TestsListPageProps> = ({
                                     <button
                                         type="button"
                                         className="tests-page__item-button"
-                                        onClick={() => navigate(`/tests/${test.id}/results`)}
+                                        onClick={() => onOpenResults(test.id)}
                                     >
                                         Результаты
                                     </button>

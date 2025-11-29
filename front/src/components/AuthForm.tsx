@@ -3,71 +3,107 @@ import React, {
     type FormEvent,
 } from 'react';
 import type { AuthSuccessPayload } from '../auth/authTypes';
+import { api } from '../api/client';
 
 type AuthFormProps = {
     onAuthSuccess: (payload: AuthSuccessPayload) => void;
 };
 
-const devAuthEnabled = true;
+const devAuthEnabled = false;
 
 export const AuthForm: React.FC<AuthFormProps> = ({ onAuthSuccess }) => {
     const [loginValue, setLoginValue] = useState('');
     const [passwordValue, setPasswordValue] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const [loginError, setLoginError] = useState('');
+    const [passwordError, setPasswordError] = useState('');
+    const validateEmailFormat = (email: string) =>
+        /\S+@\S+\.\S+/.test(email);
+
+    const validateForm = (): boolean => {
+        let valid = true;
+
+        setLoginError('');
+        setPasswordError('');
+        setErrorMessage('');
+
+        if (!loginValue.trim()) {
+            setLoginError('Вы пропустили это поле');
+            valid = false;
+        } else if (!validateEmailFormat(loginValue.trim())) {
+            setLoginError('Пользователь не найден');
+            valid = false;
+        }
+        if (!passwordValue.trim()) {
+            setPasswordError('Вы пропустили это поле');
+            valid = false;
+        }
+
+        return valid;
+    };
+
+    function isAxiosError(err: unknown): err is { response: { data?: { message?: string } } } {
+        return (
+            typeof err === 'object' &&
+            err !== null &&
+            'response' in err &&
+            typeof (err).response === 'object'
+        );
+    }
 
     const handleAuthFormSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        setErrorMessage('');
+
+        if (!validateForm()) return;
+
         setIsSubmitting(true);
 
         if (devAuthEnabled) {
             const devToken = `devTokenFor_${loginValue || 'teacher'}`;
-
             onAuthSuccess({
                 token: devToken,
                 teacherName: loginValue || 'Преподаватель',
             });
-
             setIsSubmitting(false);
             return;
         }
 
         try {
-            const response = await fetch('/api/auth/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    login: loginValue,
-                    password: passwordValue,
-                }),
+            const response = await api.post('/auth/login', {
+                login: loginValue.trim(),
+                password: passwordValue,
             });
 
-            if (!response.ok) {
-                throw new Error('Неверный логин или пароль');
-            }
+            const data: { accessToken?: string; teacherName?: string } = response.data;
 
-            const data: { accessToken?: string; teacherName?: string } =
-                await response.json();
-
-            const accessToken = data.accessToken;
-            const teacherName = data.teacherName ?? loginValue;
-
-            if (!accessToken) {
-                throw new Error('Ответ сервера не содержит токен авторизации');
+            if (!data.accessToken) {
+                throw new Error('Ошибка авторизации');
             }
 
             onAuthSuccess({
-                token: accessToken,
-                teacherName,
+                token: data.accessToken,
+                teacherName: data.teacherName ?? loginValue,
             });
-        } catch (error) {
-            setErrorMessage(
-                error instanceof Error ? error.message : 'Ошибка авторизации',
-            );
-        } finally {
+
+        } catch (err: unknown) {
+            console.error(err);
+
+            let msg = '';
+
+            if (isAxiosError(err)) {
+                msg = err.response.data?.message ?? '';
+            }
+
+            if (msg === 'USER_NOT_FOUND') {
+                setErrorMessage('Пользователь не существует');
+            } else if (msg === 'INVALID_PASSWORD') {
+                setErrorMessage('Неверный пароль');
+            } else {
+                setErrorMessage('Ошибка авторизации');
+            }
+        }
+        finally {
             setIsSubmitting(false);
         }
     };
@@ -80,40 +116,46 @@ export const AuthForm: React.FC<AuthFormProps> = ({ onAuthSuccess }) => {
         >
             <div className="auth-form__field">
                 <label className="auth-form__label" htmlFor="auth-login">
-                    Логин
+                    Email
                 </label>
+
                 <input
                     id="auth-login"
                     name="login"
-                    type="text"
-                    className="auth-form__input"
+                    type="email"
+                    className={`auth-form__input ${loginError ? 'auth-form__input--error' : ''}`}
                     value={loginValue}
-                    onChange={(event) => setLoginValue(event.target.value)}
+                    onChange={event => setLoginValue(event.target.value)}
                     autoComplete="username"
-                    required
                 />
+
+                {loginError && (
+                    <p className="auth-form__field-error">{loginError}</p>
+                )}
             </div>
 
             <div className="auth-form__field">
                 <label className="auth-form__label" htmlFor="auth-password">
                     Пароль
                 </label>
+
                 <input
                     id="auth-password"
                     name="password"
                     type="password"
-                    className="auth-form__input"
+                    className={`auth-form__input ${passwordError ? 'auth-form__input--error' : ''}`}
                     value={passwordValue}
-                    onChange={(event) => setPasswordValue(event.target.value)}
+                    onChange={event => setPasswordValue(event.target.value)}
                     autoComplete="current-password"
-                    required
                 />
+
+                {passwordError && (
+                    <p className="auth-form__field-error">{passwordError}</p>
+                )}
             </div>
 
             {errorMessage && (
-                <p className="auth-form__error-message">
-                    {errorMessage}
-                </p>
+                <p className="auth-form__error-message">{errorMessage}</p>
             )}
 
             <button

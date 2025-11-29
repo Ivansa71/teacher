@@ -3,24 +3,18 @@ FROM node:20-alpine AS build
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm ci
+RUN npm install
 
 COPY . .
-RUN npm run build    # для CRA и Vite одинаково
+RUN npm run build
 
 FROM nginx:alpine
 
-# удаляем дефолтный конфиг
 RUN rm /etc/nginx/conf.d/default.conf
-
-# кладём свой
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# статика
-# CRA
-COPY --from=build /app/build /usr/share/nginx/html
-# Vite будет /app/dist (тогда исправь путь)
+COPY --from=build /app/dist /usr/share/nginx/html
 
-EXPOSE 3000
+EXPOSE 80
 
 CMD ["nginx", "-g", "daemon off;"]

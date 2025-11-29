@@ -4,110 +4,152 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #f5f5f5;
-    padding: 16px;
+    background-color: #f3f4f6;
+    padding: 24px;
 }
 
 
 .auth-page__section {
     width: 100%;
-    max-width: 400px;
-    padding: 24px 28px;
+    max-width: 480px;
+    padding: 40px 56px 32px;
     background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    border-radius: 16px;
+    box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.06);
+    box-sizing: border-box;
 }
 
+
 .auth-page__header {
-    margin-bottom: 16px;
+    margin-bottom: 24px;
+    text-align: center;
 }
 
 .auth-page__title {
     margin: 0;
-    font-size: 24px;
+    font-size: 26px;
     font-weight: 600;
+    color: #1f2933;
 }
 
-/* Форма авторизации */
 
 .auth-form {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 18px;
 }
+
 
 .auth-form__field {
     display: flex;
     flex-direction: column;
+    align-items: stretch;
 }
 
 .auth-form__label {
-    margin-bottom: 4px;
+    margin-bottom: 6px;
     font-size: 14px;
+    color: #4b5563;
 }
 
 .auth-form__input {
-    padding: 10px 12px;
-    font-size: 14px;
-    border-radius: 4px;
-    border: 1px solid #d0d0d0;
+    height: 52px;
+    width: 100%;
+    padding: 0 16px;
+    font-size: 15px;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    background-color: #ffffff;
     outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.auth-form__input::placeholder {
+    color: #9ca3af;
 }
 
 .auth-form__input:focus {
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.2);
+    border-color: #2635a5;
+    box-shadow: 0 0 0 2px rgba(38, 53, 165, 0.15);
 }
 
 .auth-form__actions {
-    margin-top: 8px;
+    margin-top: 4px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.auth-form__forgot-password {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 14px;
+    color: #6b7280;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.auth-form__forgot-password:hover {
+    color: #4b5563;
 }
 
 .auth-form__submit-button {
     width: 100%;
-    padding: 10px 12px;
-    font-size: 14px;
-    border-radius: 4px;
+    height: 52px;
+    margin-top: 8px;
     border: none;
-    cursor: pointer;
-    background-color: #3b82f6;
+    border-radius: 10px;
+    background-color: #2536a3;
     color: #ffffff;
+    font-size: 16px;
     font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
 }
 
 .auth-form__submit-button:hover {
-    background-color: #2563eb;
+    background-color: #1d2a83;
 }
 
+/* Ошибка под полем */
+
 .auth-form__error-message {
-    margin: 0;
-    margin-top: 4px;
+    margin: 4px 0 0;
     font-size: 13px;
     color: #b91c1c;
 }
 
 .auth-register-link {
-    margin-top: 20px;
+    margin-top: 22px;
     text-align: center;
-    font-size: 15px;
-    color: #6b7280; /* серый */
+    font-size: 14px;
+    color: #6b7280;
 }
 
 .auth-register-button {
-    margin-left: 6px;
+    margin-left: 4px;
     background: none;
     border: none;
     padding: 0;
-    font-size: 15px;
-    color: #1d3b92; /* твой синий */
-    cursor: pointer;
+    font-size: 14px;
+    color: #2536a3;
     font-weight: 600;
-    transition: color 0.15s ease;
+    cursor: pointer;
 }
 
 .auth-register-button:hover {
-    color: #162f78;
     text-decoration: underline;
 }
 
+.auth-form__input--error {
+    border-color: #e5484d;
+}
+
+.auth-form__field-error {
+    margin-top: 4px;
+    font-size: 12px;
+    color: #e5484d;
+}
 
