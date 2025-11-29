@@ -1,0 +1,104 @@
+.register-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f5f5f7;
+    padding: 32px 16px;
+    box-sizing: border-box;
+}
+
+.register-card {
+    width: 100%;
+    max-width: 460px;
+    background-color: #ffffff;
+    border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    padding: 40px 48px 48px;
+    box-sizing: border-box;
+}
+
+.register-card__title {
+    margin: 0 0 32px;
+    font-size: 24px;
+    line-height: 1.3;
+    font-weight: 600;
+    color: #1f2933;
+    text-align: center;
+}
+
+.register-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* поле формы */
+
+.register-form__field {
+    width: 100%;
+}
+
+.register-input {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    font-size: 15px;
+    line-height: 1.4;
+    outline: none;
+    box-sizing: border-box;
+    background-color: #ffffff;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.register-input::placeholder {
+    color: #9ca3af;
+}
+
+.register-input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+/* кнопка */
+
+.register-submit {
+    margin-top: 12px;
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 500;
+    color: #ffffff;
+    background-color: #1d3b92; /* темно-синий как на скрине */
+    transition: transform 0.08s ease, box-shadow 0.12s ease,
+    background-color 0.12s ease;
+}
+
+.register-submit:hover {
+    background-color: #1a337f;
+    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.2);
+    transform: translateY(-1px);
+}
+
+.register-submit:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+/* адаптив */
+
+@media (max-width: 480px) {
+    .register-card {
+        padding: 32px 20px 28px;
+        border-radius: 14px;
+    }
+
+    .register-card__title {
+        font-size: 20px;
+    }
+}

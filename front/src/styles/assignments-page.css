@@ -1,0 +1,234 @@
+.assignments-page {
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem 2rem;
+    gap: 1.5rem;
+    min-height: 100vh;
+    background: #f7f9fa;
+    box-sizing: border-box;
+}
+
+.assignments-page__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.assignments-page__header-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.assignments-page__teacher {
+    font-weight: 600;
+    opacity: 0.8;
+}
+
+.assignments-page__body {
+    display: grid;
+    grid-template-columns: 1.2fr 1.4fr 1.4fr;
+    gap: 1.5rem;
+}
+
+.assignments-page button,
+.assignments-form button,
+.assignment-details button,
+.submissions-list__item button {
+    background: #1a73e8;
+    border: none;
+    padding: 0.5rem 1rem;
+    color: white;
+    font-size: 0.95rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background .2s;
+}
+
+.assignments-page button:hover,
+.assignments-form button:hover,
+.assignment-details button:hover,
+.submissions-list__item button:hover {
+    background: #155fbe;
+}
+
+.assignments-page__column {
+    background: white;
+    padding: 1rem;
+    border-radius: 10px;
+    box-shadow: 0 0 4px rgba(0,0,0,0.05);
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.assignments-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+}
+
+.assignments-list__item {
+    padding: .7rem;
+    border-radius: 6px;
+    cursor: pointer;
+    background: #f3f6f8;
+    display: flex;
+    flex-direction: column;
+    gap: .25rem;
+    transition: background .15s;
+}
+
+.assignments-list__item:hover {
+    background: #e9eef2;
+}
+
+.assignments-list__item--active {
+    background: #dce7f5;
+    border-left: 4px solid #1a73e8;
+}
+
+.assignments-list__title {
+    font-weight: 600;
+}
+
+.assignments-list__meta {
+    font-size: .85rem;
+    opacity: .7;
+    display: flex;
+    justify-content: space-between;
+}
+
+.assignments-list__empty {
+    padding: 1rem;
+    text-align: center;
+    opacity: 0.6;
+}
+
+.assignments-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.assignments-form__field {
+    display: flex;
+    flex-direction: column;
+    gap: .4rem;
+}
+
+.assignments-form__field input,
+.assignments-form__field textarea {
+    width: 100%;
+    padding: 0.5rem;
+    font-size: .95rem;
+    border: 1px solid #ccd6dd;
+    border-radius: 6px;
+    outline: none;
+    transition: border-color .15s;
+}
+
+.assignments-form__field input:focus,
+.assignments-form__field textarea:focus {
+    border-color: #1a73e8;
+}
+
+.assignment-details {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.assignment-details__field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.assignment-details__field input,
+.assignment-details__field textarea {
+    padding: 0.5rem;
+    border: 1px solid #ccd6dd;
+    border-radius: 6px;
+}
+
+.assignment-details__actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.submissions-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.submissions-list__item {
+    padding: 1rem;
+    background: #f4f7fa;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: .8rem;
+    border-left: 4px solid #9bb7d1;
+}
+
+.submissions-list__header {
+    display: flex;
+    flex-direction: column;
+    gap: .25rem;
+}
+
+.submissions-list__student {
+    font-weight: 600;
+    font-size: .95rem;
+}
+
+.submissions-list__meta {
+    font-size: .8rem;
+    opacity: .7;
+    display: flex;
+    justify-content: space-between;
+}
+
+.submissions-list__file a {
+    color: #1a73e8;
+    text-decoration: underline;
+}
+
+.submissions-list__field {
+    display: flex;
+    flex-direction: column;
+    gap: .3rem;
+}
+
+.submissions-list__field input,
+.submissions-list__field textarea {
+    padding: .5rem;
+    border-radius: 5px;
+    border: 1px solid #ccd6dd;
+}
+
+.submissions-list__student-comment {
+    background: #fff;
+    padding: .6rem;
+    border-left: 3px solid #1a73e8;
+    border-radius: 4px;
+    font-size: .9rem;
+}
+
+.assignments-page__placeholder {
+    text-align: center;
+    margin-top: 2rem;
+    color: #556;
+    opacity: 0.7;
+    font-size: 0.95rem;
+}
